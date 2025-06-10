@@ -1,5 +1,4 @@
-<!-- .github/workflows/codeql-analysis.yml -->
-name: CodeQL
+name: CodeQL Analysis
 
 on:
   push:
@@ -22,13 +21,13 @@ jobs:
       matrix:
         language: [ 'javascript' ]
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2

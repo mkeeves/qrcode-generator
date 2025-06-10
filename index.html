@@ -7,13 +7,47 @@
   <title>QR Code Generator</title>
   <script src="qrcode.min.js"></script>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 2em; }
-    input, select, button { width: 300px; padding: 0.5em; font-size: 1em; margin-top: 1em; }
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+    }
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+    }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    input, select, button {
+      width: 300px;
+      padding: 0.5em;
+      font-size: 1em;
+      margin-top: 1em;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid #ccc;
+    }
     #qrcode { margin-top: 20px; }
     .input-group { margin-bottom: 1em; }
+    .toggle-container {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+    }
   </style>
 </head>
 <body>
+  <div class="toggle-container">
+    <label>
+      <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()"> Dark Mode
+    </label>
+  </div>
+
   <h1>QR Code Generator</h1>
 
   <div>
@@ -40,6 +74,10 @@
 
   <script>
     let lastQRCode = null;
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
 
     function updateForm() {
       const mode = document.getElementById('mode').value;
