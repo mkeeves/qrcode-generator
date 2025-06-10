@@ -35,9 +35,12 @@
   </div>
 
   <button onclick="generateQRCode()">Generate QR Code</button>
+  <button onclick="downloadQRCode()">Download QR Code</button>
   <div id="qrcode"></div>
 
   <script>
+    let lastQRCode = null;
+
     function updateForm() {
       const mode = document.getElementById('mode').value;
       const formArea = document.getElementById('form-area');
@@ -98,6 +101,7 @@
 
       formArea.innerHTML = html;
       document.getElementById('qrcode').innerHTML = '';
+      lastQRCode = null;
     }
 
     function generateQRCode() {
@@ -150,8 +154,25 @@
       const qrcodeContainer = document.getElementById('qrcode');
       qrcodeContainer.innerHTML = '';
       if (data.trim()) {
-        new QRCode(qrcodeContainer, data);
+        const qr = new QRCode(qrcodeContainer, {
+          text: data,
+          width: 256,
+          height: 256,
+        });
+        lastQRCode = qr;
       }
+    }
+
+    function downloadQRCode() {
+      const canvas = document.querySelector('#qrcode canvas');
+      if (!canvas) {
+        alert('Please generate a QR code first.');
+        return;
+      }
+      const link = document.createElement('a');
+      link.download = 'qrcode.png';
+      link.href = canvas.toDataURL();
+      link.click();
     }
 
     window.onload = updateForm;
