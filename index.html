@@ -8,29 +8,153 @@
   <script src="qrcode.min.js"></script>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 2em; }
-    input { width: 300px; padding: 0.5em; font-size: 1em; }
+    input, select, button { width: 300px; padding: 0.5em; font-size: 1em; margin-top: 1em; }
     #qrcode { margin-top: 20px; }
+    .input-group { margin-bottom: 1em; }
   </style>
 </head>
 <body>
   <h1>QR Code Generator</h1>
-  <input type="text" id="text" placeholder="Enter text or URL" oninput="generateQRCode()">
+
+  <div>
+    <label for="mode">Select QR Code Type:</label>
+    <select id="mode" onchange="updateForm()">
+      <option value="text">Text / URL</option>
+      <option value="wifi">WiFi</option>
+      <option value="email">Email</option>
+      <option value="sms">SMS</option>
+      <option value="tel">Phone Number</option>
+      <option value="geo">Geolocation</option>
+      <option value="event">Calendar Event</option>
+      <option value="vcard">vCard Contact</option>
+    </select>
+  </div>
+
+  <div id="form-area">
+    <!-- Dynamic form content goes here -->
+  </div>
+
+  <button onclick="generateQRCode()">Generate QR Code</button>
   <div id="qrcode"></div>
 
   <script>
-    const qrcode = new QRCode(document.getElementById("qrcode"), {
-      text: "",
-      width: 256,
-      height: 256,
-    });
+    function updateForm() {
+      const mode = document.getElementById('mode').value;
+      const formArea = document.getElementById('form-area');
+      let html = '';
+
+      switch (mode) {
+        case 'wifi':
+          html = `
+            <div class="input-group">
+              <input type="text" id="ssid" placeholder="WiFi SSID">
+              <input type="text" id="password" placeholder="WiFi Password">
+              <select id="encryption">
+                <option value="WPA">WPA/WPA2</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass">None</option>
+              </select>
+            </div>`;
+          break;
+        case 'email':
+          html = `
+            <div class="input-group">
+              <input type="text" id="email" placeholder="Recipient Email">
+              <input type="text" id="subject" placeholder="Subject">
+              <input type="text" id="body" placeholder="Body">
+            </div>`;
+          break;
+        case 'sms':
+          html = `
+            <div class="input-group">
+              <input type="text" id="smsnumber" placeholder="Phone Number">
+              <input type="text" id="smsbody" placeholder="Message">
+            </div>`;
+          break;
+        case 'tel':
+          html = `<input type="text" id="phonenumber" placeholder="Phone Number">`;
+          break;
+        case 'geo':
+          html = `
+            <input type="text" id="latitude" placeholder="Latitude">
+            <input type="text" id="longitude" placeholder="Longitude">`;
+          break;
+        case 'event':
+          html = `
+            <input type="text" id="eventtitle" placeholder="Event Title">
+            <input type="datetime-local" id="start">
+            <input type="datetime-local" id="end">`;
+          break;
+        case 'vcard':
+          html = `
+            <input type="text" id="vname" placeholder="Full Name">
+            <input type="text" id="vorg" placeholder="Organization">
+            <input type="text" id="vphone" placeholder="Phone">
+            <input type="text" id="vemail" placeholder="Email">`;
+          break;
+        default:
+          html = `<input type="text" id="text" placeholder="Enter text or URL">`;
+      }
+
+      formArea.innerHTML = html;
+      document.getElementById('qrcode').innerHTML = '';
+    }
 
     function generateQRCode() {
-      const text = document.getElementById("text").value;
-      document.getElementById("qrcode").innerHTML = "";
-      if (text.trim()) {
-        new QRCode(document.getElementById("qrcode"), text);
+      const mode = document.getElementById('mode').value;
+      let data = '';
+
+      switch (mode) {
+        case 'wifi':
+          const ssid = document.getElementById('ssid').value;
+          const password = document.getElementById('password').value;
+          const enc = document.getElementById('encryption').value;
+          data = `WIFI:T:${enc};S:${ssid};P:${password};;`;
+          break;
+        case 'email':
+          const email = document.getElementById('email').value;
+          const subject = encodeURIComponent(document.getElementById('subject').value);
+          const body = encodeURIComponent(document.getElementById('body').value);
+          data = `mailto:${email}?subject=${subject}&body=${body}`;
+          break;
+        case 'sms':
+          const number = document.getElementById('smsnumber').value;
+          const msg = encodeURIComponent(document.getElementById('smsbody').value);
+          data = `sms:${number}?body=${msg}`;
+          break;
+        case 'tel':
+          data = `tel:${document.getElementById('phonenumber').value}`;
+          break;
+        case 'geo':
+          const lat = document.getElementById('latitude').value;
+          const lon = document.getElementById('longitude').value;
+          data = `geo:${lat},${lon}`;
+          break;
+        case 'event':
+          const title = document.getElementById('eventtitle').value;
+          const start = document.getElementById('start').value.replace(/[-:]/g, '').replace('T', '');
+          const end = document.getElementById('end').value.replace(/[-:]/g, '').replace('T', '');
+          data = `BEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${start}\nDTEND:${end}\nEND:VEVENT`;
+          break;
+        case 'vcard':
+          const vname = document.getElementById('vname').value;
+          const vorg = document.getElementById('vorg').value;
+          const vphone = document.getElementById('vphone').value;
+          const vemail = document.getElementById('vemail').value;
+          data = `BEGIN:VCARD\nVERSION:3.0\nFN:${vname}\nORG:${vorg}\nTEL:${vphone}\nEMAIL:${vemail}\nEND:VCARD`;
+          break;
+        default:
+          data = document.getElementById('text').value;
+      }
+
+      const qrcodeContainer = document.getElementById('qrcode');
+      qrcodeContainer.innerHTML = '';
+      if (data.trim()) {
+        new QRCode(qrcodeContainer, data);
       }
     }
+
+    window.onload = updateForm;
   </script>
 </body>
 </html>
