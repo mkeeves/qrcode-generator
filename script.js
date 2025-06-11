@@ -1,221 +1,186 @@
-window.onload = () => {
-  const params = new URLSearchParams(window.location.search);
-  const mode = params.get('mode') || 'text';
-  const value = params.get('text');
-  const shouldDownload = params.get('download') === 'true';
-
-  document.getElementById('mode').value = mode;
+window.onload = function () {
   updateForm();
-
-  if (value) {
-    setTimeout(() => {
-      if (mode === 'text') {
-        document.getElementById('text').value = value;
-      }
-      generateQRCode();
-      if (shouldDownload) {
-        setTimeout(() => downloadQRCode(), 100);
-      }
-    }, 100);
-  }
-
   attachApiPreviewListeners();
-};
 
-function attachApiPreviewListeners() {
-  document.getElementById('form-area').addEventListener('input', updateApiPreview);
-  document.getElementById('mode').addEventListener('change', updateApiPreview);
-}
+  // Support API usage via query params
+  const params = new URLSearchParams(window.location.search);
+  if (params.has("mode")) {
+    document.getElementById("mode").value = params.get("mode");
+    updateForm();
+    for (const [key, value] of params.entries()) {
+      const el = document.getElementById(key);
+      if (el) el.value = value;
+    }
+    generateQRCode();
+    if (params.get("download") === "true") {
+      setTimeout(downloadQRCode, 100);
+    }
+  }
+};
 
 function updateForm() {
   const mode = document.getElementById("mode").value;
   const formArea = document.getElementById("form-area");
-  let html = "";
+  formArea.innerHTML = "";
 
-  switch (mode) {
-    case "wifi":
-      html = `
-        <input type="text" id="ssid" placeholder="WiFi SSID" required>
-        <input type="text" id="password" placeholder="WiFi Password" required>
-        <select id="encryption">
-          <option value="WPA">WPA/WPA2</option>
-          <option value="WEP">WEP</option>
-          <option value="nopass">None</option>
-        </select>`;
-      break;
-    case "email":
-      html = `
-        <input type="email" id="email" placeholder="Recipient Email" required>
-        <input type="text" id="subject" placeholder="Subject">
-        <input type="text" id="body" placeholder="Body">`;
-      break;
-    case "sms":
-      html = `
-        <input type="tel" id="smsnumber" placeholder="Phone Number" required>
-        <input type="text" id="smsbody" placeholder="Message">`;
-      break;
-    case "tel":
-      html = `<input type="tel" id="phonenumber" placeholder="Phone Number" required>`;
-      break;
-    case "geo":
-      html = `
-        <input type="number" id="latitude" placeholder="Latitude" step="any" required>
-        <input type="number" id="longitude" placeholder="Longitude" step="any" required>`;
-      break;
-    case "event":
-      html = `
-        <input type="text" id="eventtitle" placeholder="Event Title" required>
-        <input type="datetime-local" id="start" required>
-        <input type="datetime-local" id="end" required>`;
-      break;
-    case "vcard":
-      html = `
-        <input type="text" id="vname" placeholder="Full Name" required>
-        <input type="text" id="vorg" placeholder="Organization">
-        <input type="tel" id="vphone" placeholder="Phone">
-        <input type="email" id="vemail" placeholder="Email">`;
-      break;
-    default:
-      html = `<input type="text" id="text" placeholder="Enter text or URL" required>`;
-  }
+  const fields = {
+    text: [
+      { id: "text", label: "Text/URL", type: "text" }
+    ],
+    wifi: [
+      { id: "ssid", label: "SSID", type: "text" },
+      { id: "password", label: "Password", type: "text" },
+      { id: "encryption", label: "Encryption", type: "select", options: ["WPA", "WEP", "nopass"] }
+    ],
+    email: [
+      { id: "to", label: "To", type: "email" },
+      { id: "subject", label: "Subject", type: "text" },
+      { id: "body", label: "Body", type: "textarea" }
+    ],
+    sms: [
+      { id: "number", label: "Number", type: "text" },
+      { id: "message", label: "Message", type: "textarea" }
+    ],
+    tel: [
+      { id: "number", label: "Phone Number", type: "text" }
+    ],
+    geo: [
+      { id: "lat", label: "Latitude", type: "text" },
+      { id: "lon", label: "Longitude", type: "text" }
+    ],
+    event: [
+      { id: "summary", label: "Summary", type: "text" },
+      { id: "location", label: "Location", type: "text" },
+      { id: "start", label: "Start Time", type: "datetime-local" },
+      { id: "end", label: "End Time", type: "datetime-local" }
+    ],
+    vcard: [
+      { id: "name", label: "Full Name", type: "text" },
+      { id: "org", label: "Organisation", type: "text" },
+      { id: "title", label: "Title", type: "text" },
+      { id: "email", label: "Email", type: "email" },
+      { id: "tel", label: "Phone", type: "text" }
+    ]
+  };
 
-  formArea.innerHTML = html;
+  const selectedFields = fields[mode] || [];
+  selectedFields.forEach(field => {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("form-field");
+
+    const label = document.createElement("label");
+    label.htmlFor = field.id;
+    label.innerText = field.label;
+
+    let input;
+    if (field.type === "select") {
+      input = document.createElement("select");
+      field.options.forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.innerText = opt;
+        input.appendChild(option);
+      });
+    } else if (field.type === "textarea") {
+      input = document.createElement("textarea");
+    } else {
+      input = document.createElement("input");
+      input.type = field.type;
+    }
+
+    input.id = field.id;
+    input.required = true;
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+    formArea.appendChild(wrapper);
+  });
+
+  attachApiPreviewListeners();
   updateApiPreview();
 }
 
-function updateApiPreview() {
-  const mode = document.getElementById('mode').value;
-  const baseUrl = 'https://qr.mkeeves.com/?mode=' + encodeURIComponent(mode);
-  let params = [];
+function attachApiPreviewListeners() {
+  const formInputs = document.querySelectorAll("#form-area input, #form-area select, #form-area textarea");
+  formInputs.forEach(input => input.addEventListener("input", updateApiPreview));
 
-  switch (mode) {
-    case 'wifi':
-      const ssid = document.getElementById('ssid')?.value || '';
-      const password = document.getElementById('password')?.value || '';
-      const encryption = document.getElementById('encryption')?.value || 'WPA';
-      params.push(`ssid=${encodeURIComponent(ssid)}`);
-      params.push(`password=${encodeURIComponent(password)}`);
-      params.push(`encryption=${encodeURIComponent(encryption)}`);
-      break;
-    case 'email':
-      const email = document.getElementById('email')?.value || '';
-      const subject = document.getElementById('subject')?.value || '';
-      const body = document.getElementById('body')?.value || '';
-      params.push(`email=${encodeURIComponent(email)}`);
-      params.push(`subject=${encodeURIComponent(subject)}`);
-      params.push(`body=${encodeURIComponent(body)}`);
-      break;
-    case 'sms':
-      const smsnumber = document.getElementById('smsnumber')?.value || '';
-      const smsbody = document.getElementById('smsbody')?.value || '';
-      params.push(`smsnumber=${encodeURIComponent(smsnumber)}`);
-      params.push(`smsbody=${encodeURIComponent(smsbody)}`);
-      break;
-    case 'tel':
-      const phone = document.getElementById('phonenumber')?.value || '';
-      params.push(`phonenumber=${encodeURIComponent(phone)}`);
-      break;
-    case 'geo':
-      const lat = document.getElementById('latitude')?.value || '';
-      const lon = document.getElementById('longitude')?.value || '';
-      params.push(`latitude=${encodeURIComponent(lat)}`);
-      params.push(`longitude=${encodeURIComponent(lon)}`);
-      break;
-    case 'event':
-      const title = document.getElementById('eventtitle')?.value || '';
-      const start = document.getElementById('start')?.value || '';
-      const end = document.getElementById('end')?.value || '';
-      params.push(`eventtitle=${encodeURIComponent(title)}`);
-      params.push(`start=${encodeURIComponent(start)}`);
-      params.push(`end=${encodeURIComponent(end)}`);
-      break;
-    case 'vcard':
-      const vname = document.getElementById('vname')?.value || '';
-      const vorg = document.getElementById('vorg')?.value || '';
-      const vphone = document.getElementById('vphone')?.value || '';
-      const vemail = document.getElementById('vemail')?.value || '';
-      params.push(`vname=${encodeURIComponent(vname)}`);
-      params.push(`vorg=${encodeURIComponent(vorg)}`);
-      params.push(`vphone=${encodeURIComponent(vphone)}`);
-      params.push(`vemail=${encodeURIComponent(vemail)}`);
-      break;
-    default:
-      const text = document.getElementById('text')?.value || '';
-      params.push(`text=${encodeURIComponent(text)}`);
+  const checkbox = document.getElementById("api-download");
+  if (checkbox) {
+    checkbox.addEventListener("change", updateApiPreview);
   }
-
-  const apiUrl = baseUrl + (params.length ? '&' + params.join('&') : '');
-  document.getElementById('api-syntax').textContent = apiUrl;
 }
 
 function generateQRCode() {
-  const qrCodeContainer = document.getElementById("qrcode");
-  qrCodeContainer.innerHTML = "";
-
   const mode = document.getElementById("mode").value;
-  let qrText = "";
+  const inputs = document.querySelectorAll("#form-area input, #form-area select, #form-area textarea");
 
+  const data = {};
+  inputs.forEach(input => data[input.id] = input.value);
+
+  let qrText = "";
   switch (mode) {
+    case "text":
+      qrText = data.text;
+      break;
     case "wifi":
-      const ssid = document.getElementById("ssid").value;
-      const password = document.getElementById("password").value;
-      const encryption = document.getElementById("encryption").value;
-      qrText = `WIFI:T:${encryption};S:${ssid};P:${password};;`;
+      qrText = `WIFI:T:${data.encryption};S:${data.ssid};P:${data.password};;`;
       break;
     case "email":
-      const email = document.getElementById("email").value;
-      const subject = document.getElementById("subject").value;
-      const body = document.getElementById("body").value;
-      qrText = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      qrText = `mailto:${data.to}?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(data.body)}`;
       break;
     case "sms":
-      const smsnumber = document.getElementById("smsnumber").value;
-      const smsbody = document.getElementById("smsbody").value;
-      qrText = `SMSTO:${smsnumber}:${smsbody}`;
+      qrText = `sms:${data.number}?body=${encodeURIComponent(data.message)}`;
       break;
     case "tel":
-      const phone = document.getElementById("phonenumber").value;
-      qrText = `tel:${phone}`;
+      qrText = `tel:${data.number}`;
       break;
     case "geo":
-      const lat = document.getElementById("latitude").value;
-      const lon = document.getElementById("longitude").value;
-      qrText = `geo:${lat},${lon}`;
+      qrText = `geo:${data.lat},${data.lon}`;
       break;
     case "event":
-      const title = document.getElementById("eventtitle").value;
-      const start = document.getElementById("start").value;
-      const end = document.getElementById("end").value;
-      qrText = `BEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${start.replace(/[-:]/g, "")}\nDTEND:${end.replace(/[-:]/g, "")}\nEND:VEVENT`;
+      qrText = `BEGIN:VEVENT\nSUMMARY:${data.summary}\nLOCATION:${data.location}\nDTSTART:${data.start.replace(/[-:]/g, '')}\nDTEND:${data.end.replace(/[-:]/g, '')}\nEND:VEVENT`;
       break;
     case "vcard":
-      const vname = document.getElementById("vname").value;
-      const vorg = document.getElementById("vorg").value;
-      const vphone = document.getElementById("vphone").value;
-      const vemail = document.getElementById("vemail").value;
-      qrText = `BEGIN:VCARD\nVERSION:3.0\nFN:${vname}\nORG:${vorg}\nTEL:${vphone}\nEMAIL:${vemail}\nEND:VCARD`;
+      qrText = `BEGIN:VCARD\nVERSION:3.0\nFN:${data.name}\nORG:${data.org}\nTITLE:${data.title}\nEMAIL:${data.email}\nTEL:${data.tel}\nEND:VCARD`;
       break;
-    default:
-      qrText = document.getElementById("text").value;
   }
 
-  new QRCode(qrCodeContainer, {
+  document.getElementById("qrcode").innerHTML = "";
+  new QRCode(document.getElementById("qrcode"), {
     text: qrText,
     width: 256,
-    height: 256,
+    height: 256
   });
+
+  updateApiPreview();
 }
 
 function downloadQRCode() {
   const canvas = document.querySelector("#qrcode canvas");
   if (!canvas) return;
+
   const link = document.createElement("a");
   link.href = canvas.toDataURL("image/png");
-  link.download = "qr-code.png";
+  link.download = "qrcode.png";
   link.click();
 }
 
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-}
+function updateApiPreview() {
+  const mode = document.getElementById("mode").value;
+  const inputs = document.querySelectorAll("#form-area input, #form-area select, #form-area textarea");
+  const params = new URLSearchParams();
+  params.append("mode", mode);
 
+  inputs.forEach(input => {
+    if (input.id && input.value) {
+      params.append(input.id, input.value);
+    }
+  });
+
+  const includeDownload = document.getElementById("api-download");
+  if (includeDownload && includeDownload.checked) {
+    params.append("download", "true");
+  }
+
+  const preview = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+  document.getElementById("api-syntax").textContent = preview;
+}

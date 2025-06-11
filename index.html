@@ -30,8 +30,13 @@
 
     <button onclick="generateQRCode()">Generate QR Code</button>
     <div id="qrcode"></div>
-    <pre id="api-syntax"></pre>
+    
     <button onclick="downloadQRCode()">Download QR Code</button>
+
+    <div class="api-preview">
+      <label><input type="checkbox" id="api-download" checked onchange="updateApiPreview()"> Include download=true</label>
+      <pre id="api-syntax"></pre>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
