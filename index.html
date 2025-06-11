@@ -1,96 +1,11 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QR Code Generator</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="qrcode.min.js"></script>
-  <style>
-    :root {
-      --bg-color: #ffffff;
-      --text-color: #000000;
-      --card-bg: #f4f4f4;
-      --error-color: #dc2626;
-    }
-    body.dark {
-      --bg-color: #121212;
-      --text-color: #ffffff;
-      --card-bg: #1e1e1e;
-      --error-color: #f87171;
-    }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 2em;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    h1 {
-      margin-bottom: 0.5em;
-    }
-    .toggle-container {
-      position: absolute;
-      top: 1em;
-      right: 1em;
-    }
-    .toggle-container button {
-      padding: 0.5em 1em;
-      font-size: 0.9em;
-      border-radius: 6px;
-      background-color: var(--card-bg);
-      border: 1px solid #ccc;
-      color: var(--text-color);
-      cursor: pointer;
-    }
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 2em;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 0.6em;
-      font-size: 1em;
-      margin-top: 1em;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    input:invalid,
-    input:invalid:focus {
-      border-color: var(--error-color);
-      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
-    }
-    .error-message {
-      color: var(--error-color);
-      font-size: 0.85em;
-      margin-top: 0.25em;
-      display: none;
-    }
-    .error-visible {
-      display: block;
-    }
-    #form-area {
-      width: 100%;
-    }
-    #qrcode {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-    }
-  </style>
 </head>
 <body>
   <div class="toggle-container">
@@ -124,34 +39,34 @@
     let lastQRCode = null;
 
     function toggleDarkMode() {
-      document.body.classList.toggle('dark');
+      document.body.classList.toggle("dark");
     }
 
     function showErrorMessage(input) {
       let error = input.nextElementSibling;
-      if (!error || !error.classList.contains('error-message')) {
-        error = document.createElement('div');
-        error.className = 'error-message';
+      if (!error || !error.classList.contains("error-message")) {
+        error = document.createElement("div");
+        error.className = "error-message";
         input.parentNode.insertBefore(error, input.nextSibling);
       }
       error.textContent = input.validationMessage;
-      error.classList.add('error-visible');
+      error.classList.add("error-visible");
     }
 
     function clearErrorMessages() {
-      document.querySelectorAll('.error-message').forEach(el => el.remove());
+      document.querySelectorAll(".error-message").forEach((el) => el.remove());
     }
 
     function updateForm() {
-      const mode = document.getElementById('mode').value;
-      const formArea = document.getElementById('form-area');
-      let html = '';
+      const mode = document.getElementById("mode").value;
+      const formArea = document.getElementById("form-area");
+      let html = "";
 
-      const required = 'required';
-      const typeText = type => `type="text" ${required} pattern=".*\\S.*"`;
+      const required = "required";
+      const typeText = () => `type="text" ${required} pattern=".*\\S.*"`;
 
       switch (mode) {
-        case 'wifi':
+        case "wifi":
           html = `
             <input ${typeText()} id="ssid" placeholder="WiFi SSID">
             <input ${typeText()} id="password" placeholder="WiFi Password">
@@ -161,32 +76,32 @@
               <option value="nopass">None</option>
             </select>`;
           break;
-        case 'email':
+        case "email":
           html = `
             <input type="email" id="email" placeholder="Recipient Email" ${required}>
             <input ${typeText()} id="subject" placeholder="Subject">
             <input ${typeText()} id="body" placeholder="Body">`;
           break;
-        case 'sms':
+        case "sms":
           html = `
             <input type="tel" id="smsnumber" placeholder="Phone Number" ${required}>
             <input ${typeText()} id="smsbody" placeholder="Message">`;
           break;
-        case 'tel':
+        case "tel":
           html = `<input type="tel" id="phonenumber" placeholder="Phone Number" ${required}>`;
           break;
-        case 'geo':
+        case "geo":
           html = `
             <input type="number" id="latitude" placeholder="Latitude" step="any" required>
             <input type="number" id="longitude" placeholder="Longitude" step="any" required>`;
           break;
-        case 'event':
+        case "event":
           html = `
             <input ${typeText()} id="eventtitle" placeholder="Event Title">
             <input type="datetime-local" id="start" ${required}>
             <input type="datetime-local" id="end" ${required}>`;
           break;
-        case 'vcard':
+        case "vcard":
           html = `
             <input ${typeText()} id="vname" placeholder="Full Name">
             <input ${typeText()} id="vorg" placeholder="Organization">
@@ -198,13 +113,13 @@
       }
 
       formArea.innerHTML = html;
-      document.getElementById('qrcode').innerHTML = '';
+      document.getElementById("qrcode").innerHTML = "";
       lastQRCode = null;
     }
 
     function generateQRCode() {
       clearErrorMessages();
-      const formInputs = document.querySelectorAll('#form-area input:required');
+      const formInputs = document.querySelectorAll("#form-area input:required");
       for (const input of formInputs) {
         if (!input.checkValidity()) {
           showErrorMessage(input);
@@ -213,54 +128,54 @@
         }
       }
 
-      const mode = document.getElementById('mode').value;
-      let data = '';
+      const mode = document.getElementById("mode").value;
+      let data = "";
 
       switch (mode) {
-        case 'wifi':
-          const ssid = document.getElementById('ssid').value;
-          const password = document.getElementById('password').value;
-          const enc = document.getElementById('encryption').value;
+        case "wifi":
+          const ssid = document.getElementById("ssid").value;
+          const password = document.getElementById("password").value;
+          const enc = document.getElementById("encryption").value;
           data = `WIFI:T:${enc};S:${ssid};P:${password};;`;
           break;
-        case 'email':
-          const email = document.getElementById('email').value;
-          const subject = encodeURIComponent(document.getElementById('subject').value);
-          const body = encodeURIComponent(document.getElementById('body').value);
+        case "email":
+          const email = document.getElementById("email").value;
+          const subject = encodeURIComponent(document.getElementById("subject").value);
+          const body = encodeURIComponent(document.getElementById("body").value);
           data = `mailto:${email}?subject=${subject}&body=${body}`;
           break;
-        case 'sms':
-          const number = document.getElementById('smsnumber').value;
-          const msg = encodeURIComponent(document.getElementById('smsbody').value);
+        case "sms":
+          const number = document.getElementById("smsnumber").value;
+          const msg = encodeURIComponent(document.getElementById("smsbody").value);
           data = `sms:${number}?body=${msg}`;
           break;
-        case 'tel':
-          data = `tel:${document.getElementById('phonenumber').value}`;
+        case "tel":
+          data = `tel:${document.getElementById("phonenumber").value}`;
           break;
-        case 'geo':
-          const lat = document.getElementById('latitude').value;
-          const lon = document.getElementById('longitude').value;
+        case "geo":
+          const lat = document.getElementById("latitude").value;
+          const lon = document.getElementById("longitude").value;
           data = `geo:${lat},${lon}`;
           break;
-        case 'event':
-          const title = document.getElementById('eventtitle').value;
-          const start = document.getElementById('start').value.replace(/[-:]/g, '').replace('T', '');
-          const end = document.getElementById('end').value.replace(/[-:]/g, '').replace('T', '');
-          data = `BEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${start}\nDTEND:${end}\nEND:VEVENT`;
+        case "event":
+          const title = document.getElementById("eventtitle").value;
+          const start = document.getElementById("start").value.replace(/[-:]/g, "").replace("T", "");
+          const end = document.getElementById("end").value.replace(/[-:]/g, "").replace("T", "");
+          data = `BEGIN:VEVENT\\nSUMMARY:${title}\\nDTSTART:${start}\\nDTEND:${end}\\nEND:VEVENT`;
           break;
-        case 'vcard':
-          const vname = document.getElementById('vname').value;
-          const vorg = document.getElementById('vorg').value;
-          const vphone = document.getElementById('vphone').value;
-          const vemail = document.getElementById('vemail').value;
-          data = `BEGIN:VCARD\nVERSION:3.0\nFN:${vname}\nORG:${vorg}\nTEL:${vphone}\nEMAIL:${vemail}\nEND:VCARD`;
+        case "vcard":
+          const vname = document.getElementById("vname").value;
+          const vorg = document.getElementById("vorg").value;
+          const vphone = document.getElementById("vphone").value;
+          const vemail = document.getElementById("vemail").value;
+          data = `BEGIN:VCARD\\nVERSION:3.0\\nFN:${vname}\\nORG:${vorg}\\nTEL:${vphone}\\nEMAIL:${vemail}\\nEND:VCARD`;
           break;
         default:
-          data = document.getElementById('text').value;
+          data = document.getElementById("text").value;
       }
 
-      const qrcodeContainer = document.getElementById('qrcode');
-      qrcodeContainer.innerHTML = '';
+      const qrcodeContainer = document.getElementById("qrcode");
+      qrcodeContainer.innerHTML = "";
       if (data.trim()) {
         const qr = new QRCode(qrcodeContainer, {
           text: data,
@@ -272,13 +187,13 @@
     }
 
     function downloadQRCode() {
-      const canvas = document.querySelector('#qrcode canvas');
+      const canvas = document.querySelector("#qrcode canvas");
       if (!canvas) {
-        alert('Please generate a QR code first.');
+        alert("Please generate a QR code first.");
         return;
       }
-      const link = document.createElement('a');
-      link.download = 'qrcode.png';
+      const link = document.createElement("a");
+      link.download = "qrcode.png";
       link.href = canvas.toDataURL();
       link.click();
     }

@@ -1,0 +1,95 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --card-bg: #f4f4f4;
+  --error-color: #dc2626;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --card-bg: #1e1e1e;
+  --error-color: #f87171;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h1 {
+  margin-bottom: 0.5em;
+}
+
+.toggle-container {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.toggle-container button {
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  border-radius: 6px;
+  background-color: var(--card-bg);
+  border: 1px solid #ccc;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 2em;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 0.6em;
+  font-size: 1em;
+  margin-top: 1em;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+input:invalid,
+input:invalid:focus {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.85em;
+  margin-top: 0.25em;
+  display: none;
+}
+
+.error-visible {
+  display: block;
+}
+
+#form-area {
+  width: 100%;
+}
+
+#qrcode {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
