@@ -11,11 +11,13 @@
       --bg-color: #ffffff;
       --text-color: #000000;
       --card-bg: #f4f4f4;
+      --error-color: #dc2626;
     }
     body.dark {
       --bg-color: #121212;
       --text-color: #ffffff;
       --card-bg: #1e1e1e;
+      --error-color: #f87171;
     }
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -66,6 +68,18 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+    input:invalid {
+      border-color: var(--error-color);
+    }
+    .error-message {
+      color: var(--error-color);
+      font-size: 0.85em;
+      margin-top: 0.25em;
+      display: none;
+    }
+    .error-visible {
+      display: block;
+    }
     #form-area {
       width: 100%;
     }
@@ -109,6 +123,21 @@
 
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
+    }
+
+    function showErrorMessage(input) {
+      let error = input.nextElementSibling;
+      if (!error || !error.classList.contains('error-message')) {
+        error = document.createElement('div');
+        error.className = 'error-message';
+        input.parentNode.insertBefore(error, input.nextSibling);
+      }
+      error.textContent = input.validationMessage;
+      error.classList.add('error-visible');
+    }
+
+    function clearErrorMessages() {
+      document.querySelectorAll('.error-message').forEach(el => el.remove());
     }
 
     function updateForm() {
@@ -172,10 +201,12 @@
     }
 
     function generateQRCode() {
+      clearErrorMessages();
       const formInputs = document.querySelectorAll('#form-area input:required');
       for (const input of formInputs) {
         if (!input.checkValidity()) {
-          input.reportValidity();
+          showErrorMessage(input);
+          input.focus();
           return;
         }
       }
