@@ -116,11 +116,14 @@
       const formArea = document.getElementById('form-area');
       let html = '';
 
+      const required = 'required';
+      const typeText = type => `type="text" ${required} pattern=".*\\S.*"`;
+
       switch (mode) {
         case 'wifi':
           html = `
-            <input type="text" id="ssid" placeholder="WiFi SSID">
-            <input type="text" id="password" placeholder="WiFi Password">
+            <input ${typeText()} id="ssid" placeholder="WiFi SSID">
+            <input ${typeText()} id="password" placeholder="WiFi Password">
             <select id="encryption">
               <option value="WPA">WPA/WPA2</option>
               <option value="WEP">WEP</option>
@@ -129,38 +132,38 @@
           break;
         case 'email':
           html = `
-            <input type="text" id="email" placeholder="Recipient Email">
-            <input type="text" id="subject" placeholder="Subject">
-            <input type="text" id="body" placeholder="Body">`;
+            <input type="email" id="email" placeholder="Recipient Email" ${required}>
+            <input ${typeText()} id="subject" placeholder="Subject">
+            <input ${typeText()} id="body" placeholder="Body">`;
           break;
         case 'sms':
           html = `
-            <input type="text" id="smsnumber" placeholder="Phone Number">
-            <input type="text" id="smsbody" placeholder="Message">`;
+            <input type="tel" id="smsnumber" placeholder="Phone Number" ${required}>
+            <input ${typeText()} id="smsbody" placeholder="Message">`;
           break;
         case 'tel':
-          html = `<input type="text" id="phonenumber" placeholder="Phone Number">`;
+          html = `<input type="tel" id="phonenumber" placeholder="Phone Number" ${required}>`;
           break;
         case 'geo':
           html = `
-            <input type="text" id="latitude" placeholder="Latitude">
-            <input type="text" id="longitude" placeholder="Longitude">`;
+            <input type="number" id="latitude" placeholder="Latitude" step="any" required>
+            <input type="number" id="longitude" placeholder="Longitude" step="any" required>`;
           break;
         case 'event':
           html = `
-            <input type="text" id="eventtitle" placeholder="Event Title">
-            <input type="datetime-local" id="start">
-            <input type="datetime-local" id="end">`;
+            <input ${typeText()} id="eventtitle" placeholder="Event Title">
+            <input type="datetime-local" id="start" ${required}>
+            <input type="datetime-local" id="end" ${required}>`;
           break;
         case 'vcard':
           html = `
-            <input type="text" id="vname" placeholder="Full Name">
-            <input type="text" id="vorg" placeholder="Organization">
-            <input type="text" id="vphone" placeholder="Phone">
-            <input type="text" id="vemail" placeholder="Email">`;
+            <input ${typeText()} id="vname" placeholder="Full Name">
+            <input ${typeText()} id="vorg" placeholder="Organization">
+            <input type="tel" id="vphone" placeholder="Phone">
+            <input type="email" id="vemail" placeholder="Email">`;
           break;
         default:
-          html = `<input type="text" id="text" placeholder="Enter text or URL">`;
+          html = `<input ${typeText()} id="text" placeholder="Enter text or URL">`;
       }
 
       formArea.innerHTML = html;
@@ -169,6 +172,14 @@
     }
 
     function generateQRCode() {
+      const formInputs = document.querySelectorAll('#form-area input:required');
+      for (const input of formInputs) {
+        if (!input.checkValidity()) {
+          input.reportValidity();
+          return;
+        }
+      }
+
       const mode = document.getElementById('mode').value;
       let data = '';
 
