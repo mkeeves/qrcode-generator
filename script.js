@@ -214,3 +214,8 @@ function downloadQRCode() {
   link.download = "qr-code.png";
   link.click();
 }
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+}
+

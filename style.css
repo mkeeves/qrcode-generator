@@ -93,3 +93,17 @@ input:invalid:focus {
   display: flex;
   justify-content: center;
 }
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode button,
+body.dark-mode textarea {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-color: #444;
+}
