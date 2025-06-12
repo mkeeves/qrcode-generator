@@ -166,7 +166,7 @@ function downloadQRCode() {
 
 function updateApiPreview() {
   const mode = document.getElementById("mode").value;
-  const inputs = document.querySelectorAll("#form-area input, #form-area select, #form-area textarea");
+  const inputs = document.querySelectorAll("#form-area input, #form-area select");
   const params = new URLSearchParams();
   params.append("mode", mode);
 
@@ -183,4 +183,17 @@ function updateApiPreview() {
 
   const preview = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
   document.getElementById("api-syntax").textContent = preview;
+
+  const copyBtn = document.getElementById("copy-api-url");
+  if (copyBtn) {
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(preview).then(() => {
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => copyBtn.textContent = "Copy URL", 1500);
+      });
+    };
+  }
 }
+
+// Also call this after form renders or mode changes
+updateApiPreview();
