@@ -166,7 +166,7 @@ function downloadQRCode() {
 
 function updateApiPreview() {
   const mode = document.getElementById("mode").value;
-  const inputs = document.querySelectorAll("#form-area input, #form-area select");
+  const inputs = document.querySelectorAll("#form-area input, #form-area select, #form-area textarea");
   const params = new URLSearchParams();
   params.append("mode", mode);
 
@@ -182,18 +182,35 @@ function updateApiPreview() {
   }
 
   const preview = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-  document.getElementById("api-syntax").textContent = preview;
+  const apiSyntax = document.getElementById("api-syntax");
+  apiSyntax.textContent = preview;
+  apiSyntax.style.cursor = "pointer";
+  apiSyntax.title = "Click to copy to clipboard";
 
-  const copyBtn = document.getElementById("copy-api-url");
-  if (copyBtn) {
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText(preview).then(() => {
-        copyBtn.textContent = "Copied!";
-        setTimeout(() => copyBtn.textContent = "Copy URL", 1500);
-      });
-    };
-  }
+  apiSyntax.onclick = () => {
+    navigator.clipboard.writeText(preview).then(() => {
+      apiSyntax.textContent = "Copied!";
+      setTimeout(() => apiSyntax.textContent = preview, 1500);
+    });
+  };
 }
 
-// Also call this after form renders or mode changes
-updateApiPreview();
+function showButtonFeedback(button) {
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = "Processing...";
+  setTimeout(() => {
+    button.textContent = originalText;
+    button.disabled = false;
+  }, 1000);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("button").forEach(button => {
+    const originalHandler = button.onclick;
+    button.onclick = function(event) {
+      if (originalHandler) originalHandler.call(this, event);
+      showButtonFeedback(this);
+    };
+  });
+});
