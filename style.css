@@ -28,6 +28,22 @@ h1 {
   margin-bottom: 0.5em;
 }
 
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+#qrcode {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
 .toggle-container {
   position: absolute;
   top: 1em;
@@ -124,9 +140,9 @@ input:invalid, textarea:invalid, select:invalid {
   100% { transform: scale(1); }
 }
 
-body.dark input:invalid,
-body.dark textarea:invalid,
-body.dark select:invalid {
+body.dark-mode input:invalid,
+body.dark-mode textarea:invalid,
+body.dark-mode select:invalid {
   border: 2px solid #ff4d4d !important;
   box-shadow: 0 0 5px 1px #ff4d4d;
   outline: none;
