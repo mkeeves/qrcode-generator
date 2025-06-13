@@ -123,3 +123,11 @@ input:invalid, textarea:invalid, select:invalid {
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
+
+body.dark input:invalid,
+body.dark textarea:invalid,
+body.dark select:invalid {
+  border: 2px solid #ff4d4d !important;
+  box-shadow: 0 0 5px 1px #ff4d4d;
+  outline: none;
+}
