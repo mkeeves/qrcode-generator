@@ -1,4 +1,10 @@
 function generateQRCode() {
+  const form = document.getElementById("form-area");
+  if (!form.checkValidity()) {
+    form.querySelectorAll("input, textarea, select").forEach(el => el.reportValidity());
+    return;
+  }
+  
   const mode = document.getElementById("mode").value;
   const inputs = document.querySelectorAll("#form-area input, #form-area select, #form-area textarea");
 
