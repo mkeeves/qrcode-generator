@@ -89,6 +89,19 @@ function updateForm() {
   
   attachApiPreviewListeners();
   updateApiPreview();
+
+  const generateBtn = document.getElementById("generate");
+  if (generateBtn && !generateBtn.dataset.bound) {
+    generateBtn.addEventListener("click", generateQRCode);
+    generateBtn.dataset.bound = "true";
+  }
+
+  const downloadBtn = document.getElementById("download");
+  if (downloadBtn && !downloadBtn.dataset.bound) {
+    downloadBtn.addEventListener("click", downloadQRCode);
+    downloadBtn.dataset.bound = "true";
+  }
+
 }
 
 function attachApiPreviewListeners() {
