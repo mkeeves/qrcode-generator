@@ -75,6 +75,18 @@ function updateForm() {
     formArea.appendChild(wrapper);
   });
 
+  const generateBtn = document.getElementById("generate");
+  if (generateBtn) {
+    generateBtn.removeEventListener("click", generateQRCode); // prevent duplicates
+    generateBtn.addEventListener("click", generateQRCode);
+  }
+
+  const downloadBtn = document.getElementById("download");
+  if (downloadBtn) {
+    downloadBtn.removeEventListener("click", downloadQRCode);
+    downloadBtn.addEventListener("click", downloadQRCode);
+  }
+  
   attachApiPreviewListeners();
   updateApiPreview();
 }
