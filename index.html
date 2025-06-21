@@ -2,54 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QR Code Generator</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="toggle-container">
-    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <div class="dark-toggle">
+    <label>
+      <input type="checkbox" id="dark-mode-toggle" />
+      Dark Mode
+    </label>
   </div>
 
   <div class="container">
     <h1>QR Code Generator</h1>
 
-    <label for="mode">Select mode:</label>
+    <label for="mode">QR Code Type:</label>
     <select id="mode" onchange="updateForm()">
-      <option value="text">Text/URL</option>
+      <option value="text">Text / URL</option>
       <option value="wifi">WiFi</option>
       <option value="email">Email</option>
       <option value="sms">SMS</option>
-      <option value="tel">Phone</option>
-      <option value="geo">Geo</option>
+      <option value="tel">Telephone</option>
+      <option value="geo">Location</option>
       <option value="event">Event</option>
       <option value="vcard">vCard</option>
     </select>
 
     <div id="form-area"></div>
 
-    <button onclick="generateQRCode()">Generate QR Code</button>
+    <div>
+      <button id="generate">Generate QR Code</button>
+      <button id="download">Download QR Code</button>
+    </div>
+
     <div id="qrcode"></div>
-    
-    <button onclick="downloadQRCode()">Download QR Code</button>
 
+    <div class="api-preview">
+      <label>
+        <input type="checkbox" id="api-download" checked />
+        Include download=true
+      </label>
+      <pre id="api-syntax" title="Click to copy to clipboard"></pre>
+    </div>
+  </div>
 
-<div class="api-preview">
-  <label>
-    <input type="checkbox" id="api-download" checked onchange="updateApiPreview()">
-    Include download=true
-  </label>
-  <pre id="api-syntax"></pre>
-  <button id="copy-api-url">Copy URL</button>
-</div>
-
-  <script src="js/qrcode.min.js"></script>
-  <script src="js/darkmode.js"></script>
-  <script src="js/form.js"></script>
-  <script src="js/qrcode.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/feedback.js"></script>
-  <script src="js/app.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script>
+    document.getElementById('dark-mode-toggle').addEventListener('change', function () {
+      document.body.classList.toggle('dark-mode', this.checked);
+    });
+  </script>
 </body>
 </html>

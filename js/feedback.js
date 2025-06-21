@@ -1,4 +1,4 @@
-function showButtonFeedback(button) {
+export function showButtonFeedback(button) {
   const originalText = button.textContent;
   button.disabled = true;
   button.textContent = "Processing...";

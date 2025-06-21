@@ -1,10 +1,6 @@
-function generateQRCode() {
-  const form = document.getElementById("form-area");
-  if (!form.checkValidity()) {
-    form.querySelectorAll("input, textarea, select").forEach(el => el.reportValidity());
-    return;
-  }
-  
+import { updateApiPreview } from './api.js';
+
+export function generateQRCode() {
   const mode = document.getElementById("mode").value;
   const inputs = document.querySelectorAll("#form-area input, #form-area select, #form-area textarea");
 
@@ -49,7 +45,7 @@ function generateQRCode() {
   updateApiPreview();
 }
 
-function downloadQRCode() {
+export function downloadQRCode() {
   const canvas = document.querySelector("#qrcode canvas");
   if (!canvas) return;
 
