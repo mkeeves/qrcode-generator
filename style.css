@@ -111,6 +111,10 @@ body.dark-mode #api-syntax {
   position: fixed;
   top: 1rem;
   right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
 }
 
 body.dark-mode input:invalid,
