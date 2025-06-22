@@ -1,11 +1,14 @@
-// Apply stored dark mode preference on page load
-if (localStorage.getItem('darkMode') === 'true') {
-  document.body.classList.add('dark-mode');
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('dark-mode-toggle');
+  if (!toggle) return;
 
-// Toggle dark mode and save preference
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-  const isDark = document.body.classList.contains('dark-mode');
-  localStorage.setItem('darkMode', isDark);
-}
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    document.body.classList.toggle('dark-mode', toggle.checked);
+    localStorage.setItem('darkMode', toggle.checked);
+  });
+});
