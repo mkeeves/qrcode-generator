@@ -1,3 +1,4 @@
+/* Base Reset and Theme */
 body {
   font-family: system-ui, sans-serif;
   margin: 0;
@@ -12,17 +13,20 @@ body.dark-mode {
   color: #f9f9f9;
 }
 
+/* Container */
 .container {
   max-width: 600px;
   margin: auto;
   padding: 2rem;
 }
 
+/* Typography and Headings */
 h1 {
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
+/* Labels and Fields */
 label {
   display: block;
   margin-bottom: 0.5rem;
@@ -42,28 +46,17 @@ select {
   font-size: 1rem;
 }
 
+/* Select Styling Consistency */
 select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   height: 42px;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg fill='black' viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.6rem center;
   background-size: 1rem;
-  padding-right: 2rem;
-}
-
-body.dark-mode input,
-body.dark-mode select,
-body.dark-mode textarea {
-  background-color: #1f1f1f;
-  color: #f9f9f9;
-  border: 1px solid #555;
-}
-
-body.dark-mode select {
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
 }
 
 input:focus,
@@ -72,6 +65,29 @@ textarea:focus {
   outline: 2px solid #007bff;
 }
 
+/* Dark Mode Fields */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background-color: #1f1f1f;
+  color: #f9f9f9;
+  border: 1px solid #555;
+}
+
+body.dark-mode select {
+  background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+}
+
+/* Validation Styling */
+body.dark-mode input:invalid,
+body.dark-mode textarea:invalid,
+body.dark-mode select:invalid {
+  border: 2px solid #ff4d4d !important;
+  box-shadow: 0 0 5px 1px #ff4d4d;
+  outline: none;
+}
+
+/* Buttons */
 button {
   background-color: #007bff;
   color: white;
@@ -98,12 +114,14 @@ button.processing {
   100% { transform: scale(1); }
 }
 
+/* QR Code Container */
 #qrcode {
   display: flex;
   justify-content: center;
   margin: 2rem 0;
 }
 
+/* API Preview Section */
 .api-preview {
   margin-top: 2rem;
   font-family: monospace;
@@ -124,6 +142,7 @@ body.dark-mode #api-syntax {
   color: #ddd;
 }
 
+/* Toggle Switches */
 .dark-toggle {
   position: fixed;
   top: 1rem;
@@ -134,7 +153,13 @@ body.dark-mode #api-syntax {
   font-size: 0.95rem;
 }
 
-/* Toggle switch styling */
+.toggle-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .switch {
   position: relative;
   display: inline-block;
@@ -176,19 +201,4 @@ body.dark-mode #api-syntax {
 
 .switch input:checked + .slider::before {
   transform: translateX(26px);
-}
-
-.toggle-line {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-body.dark-mode input:invalid,
-body.dark-mode textarea:invalid,
-body.dark-mode select:invalid {
-  border: 2px solid #ff4d4d !important;
-  box-shadow: 0 0 5px 1px #ff4d4d;
-  outline: none;
 }
