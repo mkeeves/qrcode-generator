@@ -19,4 +19,5 @@ window.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("button").forEach(button => {
     button.addEventListener("click", () => showButtonFeedback(button));
   });
+
 });

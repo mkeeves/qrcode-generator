@@ -30,8 +30,8 @@ label {
 }
 
 input,
-select,
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 0.6rem;
   margin-bottom: 1rem;
@@ -39,6 +39,19 @@ textarea {
   border-radius: 4px;
   background-color: white;
   color: #222;
+  font-size: 1rem;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 42px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+  padding-right: 2rem;
 }
 
 body.dark-mode input,
@@ -47,6 +60,10 @@ body.dark-mode textarea {
   background-color: #1f1f1f;
   color: #f9f9f9;
   border: 1px solid #555;
+}
+
+body.dark-mode select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
 }
 
 input:focus,
@@ -98,7 +115,7 @@ button.processing {
   padding: 0.8rem;
   border-radius: 5px;
   cursor: pointer;
-  word-break: break-all;
+  word-break: break-word;
   margin-top: 0.5rem;
 }
 
@@ -115,14 +132,6 @@ body.dark-mode #api-syntax {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-}
-
-body.dark-mode input:invalid,
-body.dark-mode textarea:invalid,
-body.dark-mode select:invalid {
-  border: 2px solid #ff4d4d !important;
-  box-shadow: 0 0 5px 1px #ff4d4d;
-  outline: none;
 }
 
 /* Toggle switch styling */
@@ -174,4 +183,12 @@ body.dark-mode select:invalid {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+body.dark-mode input:invalid,
+body.dark-mode textarea:invalid,
+body.dark-mode select:invalid {
+  border: 2px solid #ff4d4d !important;
+  box-shadow: 0 0 5px 1px #ff4d4d;
+  outline: none;
 }
