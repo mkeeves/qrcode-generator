@@ -149,6 +149,19 @@ body.dark-mode #api-syntax {
   color: #ddd;
 }
 
+.toggle-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.toggle-description {
+  flex: 1 1 auto;
+}
+
 /* Toggle Switches */
 .dark-toggle {
   position: fixed;
@@ -158,13 +171,6 @@ body.dark-mode #api-syntax {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-}
-
-.toggle-line {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
 }
 
 .switch {
@@ -207,5 +213,5 @@ body.dark-mode #api-syntax {
 }
 
 .switch input:checked + .slider::before {
-  transform: translateX(26px);
+  transform: translateX(22px);
 }

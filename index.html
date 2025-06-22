@@ -39,19 +39,23 @@
 
     <div id="qrcode"></div>
 
-  <div class="toggle-line">
-    <span>
-      Append <code>download=true</code> to API URLs to automatically download the generated QR code image.
-    </span>
-    <label class="switch">
-      <input type="checkbox" id="api-download" checked />
-      <span class="slider"></span>
-    </label>
+    <div class="api-preview">
+      <div class="toggle-line">
+        <span class="toggle-description">
+          Append <code>download=true</code> to API URLs to automatically download the generated QR code image.
+        </span>
+        <label class="switch">
+          <input type="checkbox" id="api-download" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <pre id="api-syntax" title="Click to copy to clipboard"></pre>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="js/darkmode.js"></script>
-  <script src="js/download-toggle.js"></script>
+  <script type="module" src="js/darkmode.js"></script>
+  <script type="module" src="js/download-toggle.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
