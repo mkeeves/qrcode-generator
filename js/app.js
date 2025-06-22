@@ -11,6 +11,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("download");
   if (downloadBtn) downloadBtn.addEventListener("click", downloadQRCode);
 
+  const modeSelector = document.getElementById("mode");
+  if (modeSelector) {
+    modeSelector.addEventListener("change", updateForm);
+  }
+
   document.querySelectorAll("button").forEach(button => {
     button.addEventListener("click", () => showButtonFeedback(button));
   });
