@@ -24,7 +24,15 @@ window.addEventListener("DOMContentLoaded", () => {
         button.closest('.dark-mode-toggle-container')) {
       return;
     }
-    button.addEventListener("click", () => showButtonFeedback(button));
+    button.addEventListener("click", function(e) {
+      // Double-check at click time to handle dynamically created buttons
+      if (this.classList.contains('dark-mode-toggle-button') || 
+          this.classList.contains('theme-option') ||
+          this.closest('.dark-mode-toggle-container')) {
+        return;
+      }
+      showButtonFeedback(this);
+    });
   });
 
 });
