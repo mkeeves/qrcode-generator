@@ -314,21 +314,33 @@
      * Bind event listeners
      */
     bindEvents() {
+      // Add direct click handlers to prevent processing feedback
+      const toggleButton = document.getElementById('theme-toggle-button');
+      if (toggleButton) {
+        toggleButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          const popup = document.getElementById('theme-popup');
+          if (popup && !popup.classList.contains('dark-mode-popup-visible')) {
+            this.showPopup();
+          } else {
+            this.hidePopup();
+          }
+        }, true); // Use capture phase to run before other handlers
+      }
+
       // Toggle button click - show/hide popup
       document.addEventListener('click', (e) => {
         if (e.target && e.target instanceof Element) {
           if (e.target.closest('#theme-toggle-button')) {
             e.preventDefault();
             e.stopPropagation();
-            const popup = document.getElementById('theme-popup');
-            if (popup && !popup.classList.contains('dark-mode-popup-visible')) {
-              this.showPopup();
-            } else {
-              this.hidePopup();
-            }
+            return;
           } else if (e.target.closest('.theme-option')) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             const themeElement = e.target.closest('.theme-option');
             const theme = themeElement?.getAttribute('data-theme');
             if (theme) {
@@ -341,6 +353,17 @@
           }
         }
       });
+      
+      // Also add direct handlers to theme options
+      setTimeout(() => {
+        document.querySelectorAll('.theme-option').forEach(option => {
+          option.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+          }, true);
+        });
+      }, 100);
 
       // Listen for system theme changes
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
