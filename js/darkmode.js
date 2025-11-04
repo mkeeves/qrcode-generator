@@ -238,6 +238,19 @@
           <span class="theme-option-label">${theme.label}</span>
         `;
 
+        // Add click handler directly to the button
+        option.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          
+          const selectedTheme = option.getAttribute('data-theme');
+          if (selectedTheme) {
+            this.setTheme(selectedTheme);
+          }
+          this.hidePopup();
+        }, true);
+
         popup.appendChild(option);
       });
 
@@ -354,16 +367,33 @@
         }
       });
       
-      // Also add direct handlers to theme options
-      setTimeout(() => {
+      // Also add direct handlers to theme options to prevent processing feedback
+      // but still allow theme selection to work
+      const addThemeOptionHandlers = () => {
         document.querySelectorAll('.theme-option').forEach(option => {
-          option.addEventListener('click', (e) => {
+          // Remove any existing handlers to avoid duplicates
+          const newOption = option.cloneNode(true);
+          option.parentNode.replaceChild(newOption, option);
+          
+          // Add handler that prevents processing feedback but allows theme change
+          newOption.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
+            
+            // Actually set the theme
+            const theme = newOption.getAttribute('data-theme');
+            if (theme) {
+              this.setTheme(theme);
+            }
+            this.hidePopup();
           }, true);
         });
-      }, 100);
+      };
+      
+      // Add handlers immediately and also after a delay for dynamically created buttons
+      addThemeOptionHandlers();
+      setTimeout(addThemeOptionHandlers, 100);
 
       // Listen for system theme changes
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
