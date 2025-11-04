@@ -43,21 +43,23 @@
     }
 
     /**
-     * Get stored theme from localStorage or cookie (for cross-domain sync)
+     * Get stored theme from cookie (for cross-domain sync) or localStorage
      */
     getStoredTheme() {
-      // Try localStorage first (faster)
-      const localTheme = localStorage.getItem('theme-preference');
-      if (localTheme) {
-        return localTheme;
-      }
-      
-      // Try cookie (for cross-domain sync)
+      // Try cookie first (for cross-domain sync) - this is the source of truth
       const cookieTheme = this.getCookie('theme-preference');
       if (cookieTheme) {
         // Sync to localStorage for faster future access
         localStorage.setItem('theme-preference', cookieTheme);
         return cookieTheme;
+      }
+      
+      // Fall back to localStorage if no cookie exists
+      const localTheme = localStorage.getItem('theme-preference');
+      if (localTheme) {
+        // Also set cookie so it's available cross-domain
+        this.setCookie('theme-preference', localTheme, 365);
+        return localTheme;
       }
       
       return null;
