@@ -76,20 +76,27 @@ textarea:focus {
 /* Dark Mode Fields */
 body.dark-mode input,
 body.dark-mode textarea,
-body.dark-mode select {
+body.dark-mode select,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
   background-color: #1f1f1f;
   color: #f9f9f9;
   border: 1px solid #555;
 }
 
-body.dark-mode select {
+body.dark-mode select,
+[data-theme="dark"] select {
   background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
 }
 
 /* Validation Styling */
 body.dark-mode input:invalid,
 body.dark-mode textarea:invalid,
-body.dark-mode select:invalid {
+body.dark-mode select:invalid,
+[data-theme="dark"] input:invalid,
+[data-theme="dark"] textarea:invalid,
+[data-theme="dark"] select:invalid {
   border: 2px solid #ff4d4d !important;
   box-shadow: 0 0 5px 1px #ff4d4d;
   outline: none;
@@ -145,7 +152,8 @@ button.processing {
   margin-top: 0.5rem;
 }
 
-body.dark-mode #api-syntax {
+body.dark-mode #api-syntax,
+[data-theme="dark"] #api-syntax {
   background-color: #2a2a2a;
   color: #ddd;
 }

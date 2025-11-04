@@ -15,7 +15,8 @@
         localStorage.setItem('theme-preference', urlTheme);
         // Clean URL by removing theme parameter
         if (urlParams.has('theme')) {
-          const newUrl = window.location.pathname + (urlParams.toString().replace(/theme=[^&]*&?/, '').replace(/&$/, '') ? '?' + urlParams.toString().replace(/theme=[^&]*&?/, '').replace(/&$/, '') : '');
+          urlParams.delete('theme');
+          const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
           window.history.replaceState({}, '', newUrl);
         }
       }
@@ -106,15 +107,20 @@
         // Subdomain - use .mkeeves.com
         const parts = hostname.split('.');
         domain = '.' + parts.slice(-2).join('.');
-      } else if (hostname.endsWith('mkeeves.com')) {
-        // Root domain - use mkeeves.com (no leading dot)
-        domain = 'mkeeves.com';
+      } else if (hostname === 'mkeeves.com' || hostname.endsWith('.mkeeves.com')) {
+        // Root domain or any mkeeves.com domain - use .mkeeves.com for cross-domain
+        domain = '.mkeeves.com';
       }
       
       // Set cookie with domain if we determined one
-      const cookieStr = name + '=' + (value || '') + expires + '; path=/' + 
-                        (domain ? '; domain=' + domain : '') + '; SameSite=Lax';
-      document.cookie = cookieStr;
+      try {
+        const cookieStr = name + '=' + (value || '') + expires + '; path=/' + 
+                          (domain ? '; domain=' + domain : '') + '; SameSite=Lax';
+        document.cookie = cookieStr;
+      } catch (e) {
+        // If cookie setting fails, just use localStorage
+        console.warn('Failed to set cookie:', e);
+      }
     }
 
     /**
@@ -368,15 +374,21 @@
       return;
     }
 
-    setTimeout(() => {
+    // Small delay to ensure DOM is fully ready
+    if (document.body) {
       window.darkMode = new DarkModeManager();
-    }, 100);
+    } else {
+      setTimeout(() => {
+        window.darkMode = new DarkModeManager();
+      }, 100);
+    }
   }
 
   // Check if DOM is already loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeDarkMode);
   } else {
+    // DOM is already loaded, initialize immediately
     initializeDarkMode();
   }
 })();
