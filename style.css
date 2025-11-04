@@ -8,7 +8,8 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-body.dark-mode {
+body.dark-mode,
+[data-theme="dark"] body {
   background-color: #121212;
   color: #f9f9f9;
 }
@@ -162,17 +163,7 @@ body.dark-mode #api-syntax {
   flex: 1 1 auto;
 }
 
-/* Toggle Switches */
-.dark-toggle {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-}
-
+/* Toggle Switches (for download toggle) */
 .switch {
   position: relative;
   display: inline-block;
@@ -214,4 +205,177 @@ body.dark-mode #api-syntax {
 
 .switch input:checked + .slider::before {
   transform: translateX(22px);
+}
+
+/* Dark Mode Toggle - Floating Button with Popup (matches mkeeves.github.io) */
+.dark-mode-toggle-container {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+
+.dark-mode-toggle-button {
+  width: 48px;
+  height: 48px;
+  background: rgba(243, 244, 246, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  border: 1px solid rgba(209, 213, 219, 0.6);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dark-mode-toggle-button:hover {
+  background: rgba(229, 231, 235, 0.8);
+  transform: scale(1.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .dark-mode-toggle-button {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] .dark-mode-toggle-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dark-mode-icon {
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .dark-mode-icon {
+  color: #ffffff;
+}
+
+.theme-icon-svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+
+/* Popup Menu */
+.dark-mode-popup {
+  position: absolute;
+  bottom: 56px;
+  right: 0;
+  width: 160px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(229, 231, 235, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.dark-mode-popup-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+[data-theme="dark"] .dark-mode-popup {
+  background: rgba(31, 41, 55, 0.95);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Theme Options */
+.theme-option {
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.theme-option:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.theme-option:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.theme-option:hover {
+  background: rgba(243, 244, 246, 0.5);
+}
+
+[data-theme="dark"] .theme-option {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .theme-option:hover {
+  background: rgba(55, 65, 81, 0.5);
+}
+
+.theme-option-active {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #2563eb !important;
+}
+
+[data-theme="dark"] .theme-option-active {
+  background: rgba(59, 130, 246, 0.2) !important;
+  color: #93c5fd !important;
+}
+
+.theme-option-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-option-icon .theme-icon-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.theme-option-label {
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dark-mode-toggle-container {
+    bottom: 12px;
+    right: 12px;
+  }
+  
+  .dark-mode-toggle-button {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .theme-icon-svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .dark-mode-popup {
+    bottom: 52px;
+    width: 140px;
+  }
 }
