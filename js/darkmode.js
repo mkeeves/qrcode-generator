@@ -92,6 +92,13 @@
      * Set cookie with appropriate domain for cross-domain access
      */
     setCookie(name, value, days) {
+      // First, delete any existing cookies with different domain/path settings
+      // This ensures we don't have conflicting cookies
+      const pastDate = 'Thu, 01 Jan 1970 00:00:00 UTC';
+      document.cookie = name + '=; expires=' + pastDate + '; path=/';
+      document.cookie = name + '=; expires=' + pastDate + '; path=/; domain=.mkeeves.com';
+      document.cookie = name + '=; expires=' + pastDate + '; path=/; domain=mkeeves.com';
+      
       let expires = '';
       if (days) {
         const date = new Date();
