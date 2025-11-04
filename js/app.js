@@ -16,7 +16,14 @@ window.addEventListener("DOMContentLoaded", () => {
     modeSelector.addEventListener("change", updateForm);
   }
 
+  // Add processing feedback to buttons, but exclude dark mode toggle buttons
   document.querySelectorAll("button").forEach(button => {
+    // Skip dark mode toggle buttons
+    if (button.classList.contains('dark-mode-toggle-button') || 
+        button.classList.contains('theme-option') ||
+        button.closest('.dark-mode-toggle-container')) {
+      return;
+    }
     button.addEventListener("click", () => showButtonFeedback(button));
   });
 
